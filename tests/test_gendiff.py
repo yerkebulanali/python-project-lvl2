@@ -10,3 +10,6 @@ def test_answer():
         assert engine.transform(engine.generate_diff(
             os.path.join(place, 'before.json'),
             os.path.join(place, 'after.json'))) == file
+        assert engine.transform(engine.generate_diff(
+            os.path.join(place, 'before.yml'),
+            os.path.join(place, 'after.yml'))) == file
