@@ -4,11 +4,14 @@ import os
 place = 'tests/fixtures/'
 
 
+def common_used(operation, i, file):
+    return '{} {}: {}\n'.format(operation, i, file)
+
 def added(before, after, operation):
     result = ''
     keys = after.keys() - before.keys()
     for i in keys:
-        result += '{} {}: {}\n'.format(operation['add'], i, after[i])
+        result += common_used(operation['add'], i, after[i])
     return result + '}'
 
 
@@ -17,7 +20,7 @@ def deleted(before, after, operation):
     keys = list(filter(lambda x: x not in list(after.keys()),
                        list(before.keys())))
     for i in keys:
-        result += '{} {}: {}\n'.format(operation['delete'], i, before[i])
+        result += common_used(operation['delete'], i, before[i])
     return result
 
 
@@ -29,17 +32,16 @@ def same(before, after, operation):
     result = ''
     for i in keys_same(before, after):
         if after[i] == before[i]:
-            result += '{\n' + '{} {}: {}\n'.format(operation['same'],
-                                                   i, before[i])
-    return result
+            result += common_used(operation['same'], i, before[i])
+    return '{\n' + result
 
 
 def changed(before, after, operation):
     result = ''
     for i in keys_same(before, after):
         if after[i] != before[i]:
-            result = '{} {}: {}\n'.format(operation['add'], i, after[i]) \
-                    + '{} {}: {}\n'.format(operation['delete'], i, before[i])
+            result += common_used(operation['add'], i, after[i]) \
+                    + common_used(operation['delete'], i, before[i])
     return result
 
 
