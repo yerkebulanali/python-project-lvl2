@@ -14,7 +14,7 @@ publish:
 	poetry publish -r yerkebulanali
 
 lint:
-	poetry run flake8 gendiff tests
+	poetry run flake8 tests gendiff
 
 test:
 	poetry run pytest --cov=gendiff --cov-report xml tests/
