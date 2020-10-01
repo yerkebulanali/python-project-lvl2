@@ -4,12 +4,11 @@ from gendiff import diff
 def add_inner_dict(source, indeed):
     result = ''
     for key, values in source.items():
+        result += '    ' * (indeed + 1) + str(key) + ': '
         if isinstance(values, dict):
-            result += '    ' * (indeed + 1) + str(key) + ': '
             result += '{' + '\n'
             result += add_inner_dict(values, indeed + 1)
         else:
-            result += '    ' * (indeed + 1) + str(key) + ': '
             result += str(values) + '\n'
     result += '    ' * indeed + '}' + '\n'
     return result
