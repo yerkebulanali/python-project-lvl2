@@ -1,40 +1,57 @@
+import pytest
 import os
 import json
-from gendiff.generate_diff import generate_diff
-from gendiff.format import DEFAULT, PLAIN, JSON
-
+from gendiff.app import generate_diff
+from gendiff import format
 
 place = './tests/fixtures/'
 
-files = (('before_complex.json', 'after_complex.json',
-          PLAIN, 'answer_complex_plain.txt'),
-         ('before_complex.yml', 'after_complex.yml',
-          PLAIN, 'answer_complex_plain.txt'),
-         ('before_simple.json', 'after_simple.json',
-          PLAIN, 'answer_simple_plain.txt'),
-         ('before_simple.yml', 'after_simple.yml',
-          PLAIN, 'answer_simple_plain.txt'),
-         ('before_complex.json', 'after_complex.json',
-          DEFAULT, 'answer_complex_default.txt'),
-         ('before_complex.yml', 'after_complex.yml',
-          DEFAULT, 'answer_complex_default.txt'),
-         ('before_simple.json', 'after_simple.json',
-          DEFAULT, 'answer_simple_default.txt'),
-         ('before_simple.yml', 'after_simple.yml',
-          DEFAULT, 'answer_simple_default.txt'),)
+expected_complex_plain = open(os.path.join(place,
+                              'answer_complex_plain.txt')).read()
+test_complex_plain_js = generate_diff(
+    os.path.join(place, 'before_complex.json'),
+    os.path.join(place, 'after_complex.json'), format.PLAIN)
+test_complex_plain_yml = generate_diff(
+    os.path.join(place, 'before_complex.yml'),
+    os.path.join(place, 'after_complex.yml'), format.PLAIN)
+expected_complex_default = open(os.path.join(place,
+                                'answer_complex_default.txt')).read()
+test_complex_default_js = generate_diff(
+    os.path.join(place, 'before_complex.json'),
+    os.path.join(place, 'after_complex.json'), format.DEFAULT)
+test_complex_default_yml = generate_diff(
+    os.path.join(place, 'before_complex.yml'),
+    os.path.join(place, 'after_complex.yml'), format.DEFAULT)
+expected_simple_plain = open(os.path.join(place,
+                             'answer_simple_plain.txt')).read()
+test_simple_plain_js = generate_diff(
+    os.path.join(place, 'before_simple.json'),
+    os.path.join(place, 'after_simple.json'), format.PLAIN)
+test_simple_plain_yml = generate_diff(
+    os.path.join(place, 'before_simple.yml'),
+    os.path.join(place, 'after_simple.yml'), format.PLAIN)
+expected_simple_default = open(os.path.join(place,
+                               'answer_simple_default.txt')).read()
+test_simple_default_js = generate_diff(
+    os.path.join(place, 'before_simple.json'),
+    os.path.join(place, 'after_simple.json'), format.DEFAULT)
+test_simple_default_yml = generate_diff(
+    os.path.join(place, 'before_simple.yml'),
+    os.path.join(place, 'after_simple.yml'), format.DEFAULT)
 
 
-def test_default_plain():
-    for i in files:
-        before_file = i[0]
-        after_file = i[1]
-        format_file = i[2]
-        answer_file = i[3]
-        with open(os.path.join(place, answer_file)) as result:
-            test_file = result.read()
-        assert generate_diff(
-            os.path.join(place, before_file),
-            os.path.join(place, after_file), format_file) == test_file
+@pytest.mark.parametrize("test_input,expected",
+                         [(test_complex_plain_js, expected_complex_plain),
+                          (test_complex_plain_yml, expected_complex_plain),
+                          (test_complex_default_js, expected_complex_default),
+                          (test_complex_default_yml, expected_complex_default),
+                          (test_simple_plain_js, expected_simple_plain),
+                          (test_simple_plain_yml, expected_simple_plain),
+                          (test_simple_default_js, expected_simple_default),
+                          (test_simple_default_yml, expected_simple_default)
+                          ])
+def test(test_input, expected):
+    assert test_input == expected
 
 
 def test_json():
@@ -42,7 +59,9 @@ def test_json():
         test_file = json.load(result)
     assert json.loads(generate_diff(
         os.path.join(place, 'before_simple.json'),
-        os.path.join(place, 'after_simple.json'), JSON)) == test_file
+        os.path.join(place, 'after_simple.json'),
+        format.JSON)) == test_file
     assert json.loads(generate_diff(
         os.path.join(place, 'before_simple.yml'),
-        os.path.join(place, 'after_simple.yml'), JSON)) == test_file
+        os.path.join(place, 'after_simple.yml'),
+        format.JSON)) == test_file

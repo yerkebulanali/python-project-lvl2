@@ -1,29 +1,31 @@
 from gendiff import diff
 
 
-def format(source, indeed=''):
-    keys = (diff.ADDED, diff.REMOVED, diff.UPDATED)
-    result = ''
-    for key, value in tuple(sorted(source.items())):
-        if value[0] == diff.NESTED:
-            result += format(value[1], indeed=indeed+key+'.')
-        elif value[0] != diff.COMMON:
-            result += "Property '{}{}' was {}".format(indeed, key, value[0])
-            if value[0] == keys[0]:
-                if isinstance(value[1], dict):
-                    result += " with value: [complex value]\n"
+def format(source, indentation=''):
+    lines = []
+    for key, (status, value) in sorted(source.items()):
+        if status == diff.NESTED:
+            lines.append(format(value, indentation=indentation+key+'.'))
+        else:
+            text = "Property '{}{}' was {}".format(indentation, key, status)
+            complex = '[complex value]'
+            if status == diff.ADDED:
+                if isinstance(value, dict):
+                    lines.append("{} with value: {}".format(text, complex))
                 else:
-                    result += " with value: '{}'\n".format(str(value[1]))
-            elif value[0] == keys[1]:
-                result += "\n"
-            elif value[0] == keys[2]:
-                new, old = value[1]
+                    lines.append("{} with value: '{}'".format(text,
+                                                              str(value)))
+            elif status == diff.REMOVED:
+                lines.append(text)
+            elif status == diff.UPDATED:
+                new, old = value
                 if isinstance(new, dict):
-                    new = '[complex value]'
-                    result += ". From '{}' to {}\n".format(old, new)
+                    lines.append("{}. From '{}' to {}".format(text,
+                                                              old, complex))
                 elif isinstance(old, dict):
-                    old = '[complex value]'
-                    result += ". From {} to '{}'\n".format(old, new)
+                    lines.append("{}. From {} to '{}'".format(text,
+                                                              complex, new))
                 else:
-                    result += ". From '{}' to '{}'\n".format(old, new)
-    return result[0:-1]
+                    lines.append("{}. From '{}' to '{}'".format(text,
+                                                                old, new))
+    return '\n'.join(lines)
