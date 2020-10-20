@@ -1,2 +1,2 @@
-[run]
-skip_empty = true
+[report]
+skip_empty = True
