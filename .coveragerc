@@ -1,2 +1,2 @@
-[coverage:report]
+[run]
 skip_empty = true
