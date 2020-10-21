@@ -1,2 +1,4 @@
 [report]
 skip_empty = True
+omit = */scripts/*
+show_missing = True

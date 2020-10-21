@@ -40,6 +40,13 @@ test_simple_default_yml = generate_diff(
     os.path.join(place, 'after_simple.yml'), format.DEFAULT)
 
 
+expected_print = open(os.path.join(place,
+                                   'answer_print.txt')).read()
+test_print = generate_diff(
+    os.path.join(place, 'before_simple.jso'),
+    os.path.join(place, 'after_simple.json'), format.PLAIN)
+
+
 @pytest.mark.parametrize("test_input,expected",
                          [(test_complex_plain_js, expected_complex_plain),
                           (test_complex_plain_yml, expected_complex_plain),
@@ -48,7 +55,8 @@ test_simple_default_yml = generate_diff(
                           (test_simple_plain_js, expected_simple_plain),
                           (test_simple_plain_yml, expected_simple_plain),
                           (test_simple_default_js, expected_simple_default),
-                          (test_simple_default_yml, expected_simple_default)
+                          (test_simple_default_yml, expected_simple_default),
+                          (test_print, expected_print)
                           ])
 def test(test_input, expected):
     assert test_input == expected

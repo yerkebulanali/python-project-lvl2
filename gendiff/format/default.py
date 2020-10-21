@@ -48,6 +48,4 @@ def format(source, intentation=0):
             result += final_pack(status, value, key, intentation)
     if result[-1] != '}':
         result = result + ('    ' * intentation) + '}'
-    else:
-        result = result + '}'
     return result

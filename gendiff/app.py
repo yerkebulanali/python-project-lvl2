@@ -24,8 +24,9 @@ def generate_diff(old_data, new_data, name=None):
         elif name == format.JSON:
             return format.json(diff.generate(old_data, new_data))
         return format.default(diff.generate(old_data, new_data))
-    print('Compare yml or json file, please')
-    answer = 'Correct name of file: name.json or name.yml'
+    line1 = 'Compare yml or json file, please'
+    line2 = 'Correct name of file: name.json or name.yml'
+    answer = '{}\n{}'.format(line1, line2)
     return answer
 
 

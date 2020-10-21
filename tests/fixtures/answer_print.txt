@@ -1,0 +1,2 @@
+Compare yml or json file, please
+Correct name of file: name.json or name.yml
